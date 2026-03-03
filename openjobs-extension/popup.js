@@ -133,7 +133,7 @@ async function loadExisting() {
     keys.featureFlags,
     keys.debugUnlocked
   ]);
-  backendUrlEl.value = stored[keys.backendUrl] || 'http://localhost:3000';
+  backendUrlEl.value = stored[keys.backendUrl] || 'https://openjobs-backend-6lyr94s9c-suras-projects-1078d583.vercel.app';
   accessTokenEl.value = stored[keys.accessToken] || '';
   applyProfile(stored[keys.profile] || {});
   const resume = stored[keys.resume];
