@@ -275,6 +275,8 @@
   }
 
   function init() {
+    const host = window.location.hostname.toLowerCase();
+    if (host.includes('supabase.com') || host.includes('vercel.app') || host === 'vercel.com') return;
     if (isSupportedNativeDomain()) return;
     storageGet([CONFIG_KEYS.featureFlags]).then((stored) => {
       const flags = stored[CONFIG_KEYS.featureFlags] || {};

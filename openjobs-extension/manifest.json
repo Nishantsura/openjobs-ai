@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "OpenJobs AI",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "User-controlled job application assistant.",
   "permissions": ["activeTab", "scripting", "storage", "identity"],
   "host_permissions": [
@@ -87,7 +87,10 @@
         "https://*.glassdoor.com/*",
         "https://*.glassdoor.co.in/*",
         "https://*.wellfound.com/*",
-        "https://*.angel.co/*"
+        "https://*.angel.co/*",
+        "https://*.supabase.com/*",
+        "https://*.vercel.app/*",
+        "https://vercel.com/*"
       ],
       "js": ["core.js", "form_adapter_core.js", "assist_mode.js"],
       "run_at": "document_idle"
