@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
   "name": "OpenJobs AI",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "User-controlled job application assistant.",
-  "permissions": ["activeTab", "scripting", "storage"],
+  "permissions": ["activeTab", "scripting", "storage", "identity"],
   "host_permissions": [
     "https://*.linkedin.com/*",
     "https://*.greenhouse.io/*",

@@ -102,6 +102,53 @@ function callApi(url, method, headers, body) {
   });
 }
 
+function parseAuthRedirect(finalUrl) {
+  try {
+    const url = new URL(finalUrl);
+    const query = new URLSearchParams(url.search || '');
+    const hash = new URLSearchParams((url.hash || '').replace(/^#/, ''));
+    const accessToken = hash.get('access_token') || query.get('access_token') || '';
+    const refreshToken = hash.get('refresh_token') || query.get('refresh_token') || '';
+    const tokenType = hash.get('token_type') || query.get('token_type') || '';
+    const expiresIn = Number(hash.get('expires_in') || query.get('expires_in') || '0');
+    const code = query.get('code') || '';
+    return {
+      accessToken,
+      refreshToken,
+      tokenType,
+      expiresIn,
+      code
+    };
+  } catch (_err) {
+    return {
+      accessToken: '',
+      refreshToken: '',
+      tokenType: '',
+      expiresIn: 0,
+      code: ''
+    };
+  }
+}
+
+function runWebAuthFlow(authUrl) {
+  return new Promise((resolve) => {
+    chrome.identity.launchWebAuthFlow(
+      {
+        url: authUrl,
+        interactive: true
+      },
+      (redirectedTo) => {
+        const runtimeError = chrome.runtime?.lastError;
+        if (runtimeError) {
+          resolve({ ok: false, error: runtimeError.message || 'OAuth flow failed' });
+          return;
+        }
+        resolve({ ok: true, redirectedTo: redirectedTo || '' });
+      }
+    );
+  });
+}
+
 async function authHeaders(token) {
   const clientId = await getOrCreateClientId();
   const headers = { 'Content-Type': 'application/json', 'x-openjobs-client-id': clientId };
@@ -163,12 +210,14 @@ appTitleEl.addEventListener('click', async () => {
 
 googleBtn.addEventListener('click', async () => {
   const backend = backendUrlEl.value.trim() || 'http://localhost:3000';
-  const email = signinEmailEl.value.trim() || 'placeholder@example.com';
+  const email = signinEmailEl.value.trim() || undefined;
+  const redirectTo = chrome.identity.getRedirectURL('supabase-auth');
   setStatus('Starting Google sign in...', 'info');
   const headers = await authHeaders(null);
   const res = await callApi(`${backend.replace(/\/$/, '')}/api/auth/session-exchange`, 'POST', headers, {
     mode: 'google_oauth',
-    email
+    email,
+    redirectTo
   });
   const oauthUrl = res?.data?.data?.url;
   if (!res.ok || !oauthUrl) {
@@ -181,8 +230,34 @@ googleBtn.addEventListener('click', async () => {
     setDebug(`google_signin_status=${res.status} err=${details}`);
     return;
   }
-  chrome.tabs.create({ url: oauthUrl });
-  setStatus('Google sign in opened in new tab. Return here after login.', 'ok');
+
+  const authFlow = await runWebAuthFlow(oauthUrl);
+  if (!authFlow.ok) {
+    setStatus('Google sign-in failed in extension OAuth flow.', 'error');
+    setDebug(`oauth_flow_failed err=${authFlow.error || ''}`);
+    return;
+  }
+
+  const parsed = parseAuthRedirect(authFlow.redirectedTo);
+  if (parsed.accessToken) {
+    accessTokenEl.value = parsed.accessToken;
+    await setStorage({
+      [keys.backendUrl]: backend,
+      [keys.accessToken]: parsed.accessToken
+    });
+    setStatus('Google sign-in complete. Access token captured.', 'ok');
+    setDebug(`oauth_ok token_type=${parsed.tokenType || 'unknown'} expires_in=${parsed.expiresIn || 0}`);
+    return;
+  }
+
+  if (parsed.code) {
+    setStatus('Google sign-in returned auth code. Token exchange is not wired yet.', 'warn');
+    setDebug('oauth_returned_code=1 (needs server code exchange)');
+    return;
+  }
+
+  setStatus('Google sign-in completed but token not found.', 'error');
+  setDebug('oauth_no_token_in_redirect=1');
 });
 
 magicBtn.addEventListener('click', async () => {

@@ -4,8 +4,9 @@ import { getSupabaseAnon } from '@/lib/supabase';
 
 const bodySchema = z.object({
   mode: z.enum(['password', 'magic_link', 'google_oauth']).default('password'),
-  email: z.string().email(),
-  password: z.string().min(1).optional()
+  email: z.string().email().optional(),
+  password: z.string().min(1).optional(),
+  redirectTo: z.string().url().optional()
 });
 
 export async function POST(request: Request) {
@@ -21,8 +22,8 @@ export async function POST(request: Request) {
     const result = await supabaseAnon.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        // Extension-friendly fallback; can be replaced with hosted callback page.
-        redirectTo: 'https://openrouter.ai/'
+        // Extension can pass chrome.identity redirect URL for token capture.
+        redirectTo: parsed.data.redirectTo || 'https://openrouter.ai/'
       }
     });
 
@@ -37,6 +38,9 @@ export async function POST(request: Request) {
   }
 
   if (parsed.data.mode === 'magic_link') {
+    if (!parsed.data.email) {
+      return fail('Email is required for magic link mode', 400, null, 'AUTH_EMAIL_REQUIRED');
+    }
     const result = await supabaseAnon.auth.signInWithOtp({
       email: parsed.data.email
     });
@@ -53,6 +57,9 @@ export async function POST(request: Request) {
 
   if (!parsed.data.password) {
     return fail('Password is required for password mode', 400, null, 'AUTH_PASSWORD_REQUIRED');
+  }
+  if (!parsed.data.email) {
+    return fail('Email is required for password mode', 400, null, 'AUTH_EMAIL_REQUIRED');
   }
 
   const result = await supabaseAnon.auth.signInWithPassword({
