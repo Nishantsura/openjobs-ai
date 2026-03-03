@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OpenJobs AI</title>
+    <style>
+      :root {
+        --blue: #0a66c2;
+        --ink: #17324f;
+        --muted: #5b6f87;
+        --bg: #f5f9ff;
+      }
+      body {
+        margin: 0;
+        padding: 12px;
+        width: 380px;
+        font-family: Arial, sans-serif;
+        color: var(--ink);
+        background: #fff;
+      }
+      h3 {
+        margin: 0;
+        cursor: pointer;
+        user-select: none;
+      }
+      .sub {
+        margin: 4px 0 12px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .card {
+        background: var(--bg);
+        border: 1px solid #d8e8fb;
+        border-radius: 10px;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+      .row {
+        display: grid;
+        gap: 5px;
+        margin-bottom: 8px;
+      }
+      label {
+        font-size: 12px;
+        font-weight: 700;
+      }
+      input {
+        border: 1px solid #c4d8ef;
+        border-radius: 8px;
+        padding: 8px;
+        font-size: 12px;
+      }
+      button {
+        border: none;
+        border-radius: 8px;
+        padding: 9px 12px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .primary {
+        background: var(--blue);
+        color: #fff;
+      }
+      .secondary {
+        background: #eaf4ff;
+        color: #0a66c2;
+        border: 1px solid #b7d7fb;
+      }
+      .actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .hint {
+        font-size: 11px;
+        color: var(--muted);
+      }
+      #debugPanel {
+        display: none;
+      }
+      #status {
+        margin-top: 8px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <h3 id="appTitle">OpenJobs AI</h3>
+    <div class="sub">Sign in, upload resume, and start Smart Apply.</div>
+
+    <div class="card">
+      <div class="actions">
+        <button id="googleBtn" class="primary" type="button">Sign In with Google</button>
+        <button id="magicBtn" class="secondary" type="button">Send Magic Link</button>
+      </div>
+      <div class="row" style="margin-top: 8px">
+        <label for="signinEmail">Email (for magic link)</label>
+        <input id="signinEmail" type="email" placeholder="you@example.com" />
+      </div>
+      <div class="hint">Google is primary. Magic link is fallback.</div>
+    </div>
+
+    <div class="card">
+      <div class="row">
+        <label for="resumeFile">Resume PDF</label>
+        <input id="resumeFile" type="file" accept="application/pdf" />
+        <div id="resumeInfo" class="hint">No resume selected.</div>
+      </div>
+      <button id="parseResumeBtn" class="secondary" type="button">Parse Resume & Autofill</button>
+    </div>
+
+    <div class="card">
+      <div class="row"><label for="firstName">First Name</label><input id="firstName" /></div>
+      <div class="row"><label for="lastName">Last Name</label><input id="lastName" /></div>
+      <div class="row"><label for="email">Email</label><input id="email" /></div>
+      <div class="row"><label for="phone">Phone</label><input id="phone" /></div>
+      <div class="row"><label for="linkedinUrl">LinkedIn URL</label><input id="linkedinUrl" /></div>
+      <div class="row"><label for="city">City</label><input id="city" /></div>
+      <div class="row"><label for="expectedSalaryRange">Expected Salary Range</label><input id="expectedSalaryRange" placeholder="e.g. 28-35 LPA" /></div>
+      <button id="saveProfileBtn" class="primary" type="button">Save & Enable AI</button>
+    </div>
+
+    <div class="card" id="debugPanel">
+      <div class="row"><label for="backendUrl">Backend URL</label><input id="backendUrl" placeholder="http://localhost:3000" /></div>
+      <div class="row"><label for="accessToken">Access Token</label><input id="accessToken" type="password" /></div>
+      <div class="actions">
+        <button id="reloadTabBtn" class="secondary" type="button">Reload This Tab</button>
+        <button id="reloadExtBtn" class="secondary" type="button">Reload Extension</button>
+      </div>
+      <div id="debug" class="hint"></div>
+    </div>
+
+    <div id="status">Setup required before Smart Apply.</div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
+

@@ -1,0 +1,100 @@
+{
+  "manifest_version": 3,
+  "name": "OpenJobs AI",
+  "version": "0.2.3",
+  "description": "User-controlled job application assistant.",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "host_permissions": [
+    "https://*.linkedin.com/*",
+    "https://*.greenhouse.io/*",
+    "https://*.lever.co/*",
+    "https://*.wellfound.com/*",
+    "https://*.indeed.com/*",
+    "https://*.indeed.co.in/*",
+    "https://*.glassdoor.com/*",
+    "https://*.glassdoor.co.in/*",
+    "https://*.naukri.com/*",
+    "https://*.supabase.co/*",
+    "http://localhost/*",
+    "http://127.0.0.1/*",
+    "https://*.vercel.app/*",
+    "https://*.angel.co/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.linkedin.com/*"],
+      "js": ["core.js", "content.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://*.greenhouse.io/*", "https://boards.greenhouse.io/*", "https://job-boards.greenhouse.io/*"],
+      "js": ["core.js", "platform_selectors.js", "form_adapter_core.js", "greenhouse.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://*.lever.co/*"],
+      "js": ["core.js", "platform_selectors.js", "form_adapter_core.js", "lever.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://*.indeed.com/*"],
+      "js": ["core.js", "platform_selectors.js", "form_adapter_core.js", "indeed.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://*.indeed.co.in/*"],
+      "js": ["core.js", "platform_selectors.js", "form_adapter_core.js", "indeed.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://*.glassdoor.com/*"],
+      "js": ["core.js", "platform_selectors.js", "form_adapter_core.js", "glassdoor.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://*.glassdoor.co.in/*"],
+      "js": ["core.js", "platform_selectors.js", "form_adapter_core.js", "glassdoor.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://*.wellfound.com/*"],
+      "js": ["core.js", "platform_selectors.js", "form_adapter_core.js", "wellfound.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://*.angel.co/*"],
+      "js": ["core.js", "platform_selectors.js", "form_adapter_core.js", "wellfound.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://*.naukri.com/*"],
+      "js": ["core.js", "platform_selectors.js", "form_adapter_core.js", "naukri.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "exclude_matches": [
+        "https://*.linkedin.com/*",
+        "https://*.greenhouse.io/*",
+        "https://boards.greenhouse.io/*",
+        "https://job-boards.greenhouse.io/*",
+        "https://*.lever.co/*",
+        "https://*.indeed.com/*",
+        "https://*.indeed.co.in/*",
+        "https://*.glassdoor.com/*",
+        "https://*.glassdoor.co.in/*",
+        "https://*.wellfound.com/*",
+        "https://*.angel.co/*"
+      ],
+      "js": ["core.js", "form_adapter_core.js", "assist_mode.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "OpenJobs AI"
+  }
+}

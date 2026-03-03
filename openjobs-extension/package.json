@@ -1,0 +1,17 @@
+{
+  "name": "openjobs-extension",
+  "version": "1.0.0",
+  "description": "- MV3 extension shell with required permissions. - LinkedIn Easy Apply detection (`Easy Apply` text/aria). - Smart Apply button injection near native Easy Apply button. - Modal-driven automation loop for: - Known field fill (name, email, phone, LinkedIn URL, city) - Resume file upload from popup-configured PDF - Screening answer generation via backend API - Step progression (`Next`/`Review`) with safety cap - Stop-before-submit banner (`Review and Submit`) - CAPTCHA pause behavior - Session cap of 25 Smart Applies per day",
+  "main": "background.js",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "jsdom": "^28.1.0",
+    "vitest": "^4.0.18"
+  }
+}
