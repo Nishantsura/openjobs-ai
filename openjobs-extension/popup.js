@@ -211,7 +211,7 @@ appTitleEl.addEventListener('click', async () => {
 googleBtn.addEventListener('click', async () => {
   const backend = backendUrlEl.value.trim() || 'http://localhost:3000';
   const email = signinEmailEl.value.trim() || undefined;
-  const redirectTo = chrome.identity.getRedirectURL('supabase-auth');
+  const redirectTo = chrome.identity.getRedirectURL();
   setStatus('Starting Google sign in...', 'info');
   const headers = await authHeaders(null);
   const res = await callApi(`${backend.replace(/\/$/, '')}/api/auth/session-exchange`, 'POST', headers, {
@@ -231,6 +231,7 @@ googleBtn.addEventListener('click', async () => {
     return;
   }
 
+  setDebug(`oauth_redirect_to=${redirectTo}`);
   const authFlow = await runWebAuthFlow(oauthUrl);
   if (!authFlow.ok) {
     setStatus('Google sign-in failed in extension OAuth flow.', 'error');

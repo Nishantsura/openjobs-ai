@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "OpenJobs AI",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "description": "User-controlled job application assistant.",
   "permissions": ["activeTab", "scripting", "storage", "identity"],
   "host_permissions": [
