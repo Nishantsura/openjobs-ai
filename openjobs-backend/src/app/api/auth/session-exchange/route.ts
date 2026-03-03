@@ -23,7 +23,10 @@ export async function POST(request: Request) {
       provider: 'google',
       options: {
         // Extension can pass chrome.identity redirect URL for token capture.
-        redirectTo: parsed.data.redirectTo || 'https://openrouter.ai/'
+        redirectTo: parsed.data.redirectTo || 'https://openrouter.ai/',
+        queryParams: {
+          response_type: 'token'
+        }
       }
     });
 
